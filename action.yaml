@@ -1,5 +1,10 @@
 name: 'oxs-package-upload'
 description: 'Uploads a zip file to a Web API endpoint'
+
+branding:
+  icon: upload
+  color: 'blue'
+
 inputs:
   zip-path:
     description: 'The path to the zip file to upload'
