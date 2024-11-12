@@ -1,4 +1,4 @@
-name: 'simplic-oxs-package-upload-action'
+name: 'oxs-package-upload'
 description: 'Uploads a zip file to a Web API endpoint'
 inputs:
   zip-path:
