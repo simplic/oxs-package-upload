@@ -23,9 +23,10 @@ runs:
       env:
         API_URL: ${{ inputs.api-url }}
         API_TOKEN: ${{ inputs.api-token }}
+      shell: bash
       run: |
         curl -X POST "$API_URL" \
           -H "Authorization: Bearer $API_TOKEN" \
           -F "file=@${{ inputs.zip-path }}"
-      shell: bash
+      
       
