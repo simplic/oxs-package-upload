@@ -6,8 +6,8 @@ branding:
   color: 'blue'
 
 inputs:
-  zip-path:
-    description: 'The path to the zip file to upload'
+  payload-path:
+    description: 'The path to the payload JSON file to upload'
     required: true
   api-url:
     description: 'The Web API endpoint URL'
@@ -19,7 +19,6 @@ runs:
   using: 'composite'
   steps:
     - name: Upload to API
-      
       env:
         API_URL: ${{ inputs.api-url }}
         API_TOKEN: ${{ inputs.api-token }}
@@ -27,6 +26,6 @@ runs:
       run: |
         curl -X POST "$API_URL" \
           -H "Authorization: Bearer $API_TOKEN" \
-          -F "file=@${{ inputs.zip-path }}"
-      
-      
+          -H "Content-Type: application/json" \
+          -d @${{ inputs.payload-path }} 
+    
