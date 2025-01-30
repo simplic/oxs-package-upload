@@ -24,8 +24,15 @@ runs:
         API_TOKEN: ${{ inputs.api-token }}
       shell: bash
       run: |
+
+        if [ ! -f "${{ inputs.payload-path }}" ]; then
+          echo "Payload file not found: ${{ inputs.payload-path }}"
+          exit 1
+        fi
+        
         curl -X POST "$API_URL" \
           -H "Authorization: Bearer $API_TOKEN" \
           -H "Content-Type: application/json" \
-          -d @${{ inputs.payload-path }} 
+          -d @"${{ inputs.payload-path }}" \
+          -v
     
