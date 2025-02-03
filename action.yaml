@@ -25,19 +25,7 @@ runs:
         PAYLOAD_PATH: ${{ inputs.payload-path }}
       shell: bash
       run: |
-        if [ ! -d "$PAYLOAD_PATH" ]; then
-          echo "Payload directory not found: $PAYLOAD_PATH"
-          exit 1
-        fi
-
-        json_files=($(find "$PAYLOAD_PATH" -maxdepth 1 -type f -name '*.json'))
-        
-        if [ ${#json_files[@]} -eq 0 ]; then
-          echo "No JSON files found in directory: $PAYLOAD_PATH"
-          exit 1
-        fi
-
-        for file in "${json_files[@]}"; do
+        for file in ${{ inputs.payload-path }}; do
           echo "Uploading $file..."
           curl -X POST "$API_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
