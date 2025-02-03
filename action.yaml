@@ -7,7 +7,7 @@ branding:
 
 inputs:
   payload-path:
-    description: 'The path to the payload JSON file to upload'
+    description: 'The path to the directory containing payload JSON files'
     required: true
   api-url:
     description: 'The Web API endpoint URL'
@@ -18,21 +18,30 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Upload to API
+    - name: Upload JSON files to API
       env:
         API_URL: ${{ inputs.api-url }}
         API_TOKEN: ${{ inputs.api-token }}
+        PAYLOAD_PATH: ${{ inputs.payload-path }}
       shell: bash
       run: |
-
-        if [ ! -f "${{ inputs.payload-path }}" ]; then
-          echo "Payload file not found: ${{ inputs.payload-path }}"
+        if [ ! -d "$PAYLOAD_PATH" ]; then
+          echo "Payload directory not found: $PAYLOAD_PATH"
           exit 1
         fi
+
+        json_files=($(find "$PAYLOAD_PATH" -maxdepth 1 -type f -name '*.json'))
         
-        curl -X POST "$API_URL" \
-          -H "Authorization: Bearer $API_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d @"${{ inputs.payload-path }}" \
-          -v
-    
+        if [ ${#json_files[@]} -eq 0 ]; then
+          echo "No JSON files found in directory: $PAYLOAD_PATH"
+          exit 1
+        fi
+
+        for file in "${json_files[@]}"; do
+          echo "Uploading $file..."
+          curl -X POST "$API_URL" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @"$file" \
+            -v
+        done
